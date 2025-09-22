@@ -9,6 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  basePath: '/guido',
+  assetPrefix: '/guido',
 }
 
 export default nextConfig
