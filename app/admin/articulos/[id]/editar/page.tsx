@@ -1,58 +1,26 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect, notFound } from "next/navigation"
-import { AdminHeader } from "@/components/admin/admin-header"
-import { ArticleEditor } from "@/components/admin/article-editor"
+import { redirect } from 'next/navigation'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { AdminHeader } from '@/components/admin/admin-header'
+import { ArticleEditor } from '@/components/admin/article-editor'
+import { getAllCategories, getAllTags, getArticleById } from '@/lib/database/queries'
 
-export default async function EditArticlePage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const { id } = await params
-  const supabase = await createClient()
+export default async function EditArticlePage({ params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions)
 
-  // Check if user is authenticated and is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
+  if (!session?.user || session.user.role !== 'admin') {
+    redirect('/auth/login')
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
-  if (!profile?.is_admin) {
-    redirect("/")
-  }
-
-  // Fetch the article
-  const { data: article } = await supabase
-    .from("articles")
-    .select(
-      `
-      *,
-      article_tags (
-        tag_id,
-        tags (
-          id,
-          name
-        )
-      )
-    `,
-    )
-    .eq("id", id)
-    .single()
+  const [categories, tags, article] = await Promise.all([
+    getAllCategories(),
+    getAllTags(),
+    getArticleById(params.id)
+  ])
 
   if (!article) {
-    notFound()
+    redirect('/admin/articulos')
   }
-
-  // Fetch categories and tags for the editor
-  const [{ data: categories }, { data: tags }] = await Promise.all([
-    supabase.from("categories").select("*").order("name"),
-    supabase.from("tags").select("*").order("name"),
-  ])
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,7 +32,11 @@ export default async function EditArticlePage({
             <p className="text-muted-foreground">Modifica el artículo existente</p>
           </div>
 
-          <ArticleEditor article={article} categories={categories || []} tags={tags || []} />
+          <ArticleEditor 
+            categories={categories || []} 
+            tags={tags || []} 
+            article={article}
+          />
         </div>
       </main>
     </div>

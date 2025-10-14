@@ -14,6 +14,13 @@ interface Category {
   id: string
   name: string
   slug: string
+  description?: string
+  parent_id?: string
+  created_at: string
+  updated_at: string
+  children?: Category[]
+  level?: number
+  full_path?: string
 }
 
 interface Tag {
@@ -57,6 +64,44 @@ export function NewsFilters({ categories, tags, currentCategory, currentTag, cur
     router.push("/noticias")
   }
 
+  // Function to render categories hierarchically
+  const renderCategoryTree = (categories: Category[], level: number = 0): React.ReactNode => {
+    return categories.map((category) => (
+      <div key={category.id}>
+        <button
+          onClick={() => updateFilters("categoria", category.slug)}
+          className={`block w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+            currentCategory === category.slug ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+          } ${level > 0 ? 'text-muted-foreground' : ''}`}
+          style={{ marginLeft: `${level * 20}px` }}
+        >
+          {level > 0 && <span className="text-muted-foreground mr-1">└─</span>}
+          {category.name}
+        </button>
+        {category.children && category.children.length > 0 && 
+          renderCategoryTree(category.children, level + 1)
+        }
+      </div>
+    ))
+  }
+
+  // Get top-level categories (those without parent_id)
+  const topLevelCategories = categories.filter(cat => !cat.parent_id)
+
+  // Helper function to find a category by slug in the hierarchical structure
+  const findCategoryBySlug = (categories: Category[], slug: string): Category | undefined => {
+    for (const category of categories) {
+      if (category.slug === slug) {
+        return category
+      }
+      if (category.children) {
+        const found = findCategoryBySlug(category.children, slug)
+        if (found) return found
+      }
+    }
+    return undefined
+  }
+
   const hasActiveFilters = currentCategory || currentTag || currentSearch
 
   return (
@@ -95,7 +140,7 @@ export function NewsFilters({ categories, tags, currentCategory, currentTag, cur
               <div className="flex flex-wrap gap-2">
                 {currentCategory && (
                   <Badge variant="secondary" className="flex items-center gap-1">
-                    Categoría: {categories.find((c) => c.slug === currentCategory)?.name}
+                    Categoría: {findCategoryBySlug(categories, currentCategory)?.name}
                     <X className="h-3 w-3 cursor-pointer" onClick={() => updateFilters("categoria", null)} />
                   </Badge>
                 )}
@@ -135,17 +180,7 @@ export function NewsFilters({ categories, tags, currentCategory, currentTag, cur
             >
               Todas las categorías
             </button>
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => updateFilters("categoria", category.slug)}
-                className={`block w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                  currentCategory === category.slug ? "bg-primary text-primary-foreground" : "hover:bg-muted"
-                }`}
-              >
-                {category.name}
-              </button>
-            ))}
+            {renderCategoryTree(topLevelCategories)}
           </div>
         </CardContent>
       </Card>

@@ -1,0 +1,19 @@
+# Instrucciones para actualizar .env.local en el VPS
+# Edita el archivo .env.local en tu servidor con estos valores:
+
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=guidoblanco_db
+DB_USER=guidoblanco_user
+DB_PASSWORD=guidoblanco123
+
+# NextAuth Configuration
+NEXTAUTH_URL=http://162.240.174.46
+NEXTAUTH_SECRET=xK8mP2vN9qR5sT8wE3zY6cA1bD4fG7hJ
+
+# Application Environment
+NODE_ENV=production
+
+# Site Configuration
+NEXT_PUBLIC_SITE_URL=http://162.240.174.46

@@ -4,10 +4,24 @@ import { Button } from "@/components/ui/button"
 import { Calendar, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { getLatestArticles, formatDateShort } from "@/lib/supabase/articles"
+import { getLatestArticles } from "@/lib/database/queries"
+
+function formatDateShort(dateString: string): string {
+  return new Date(dateString).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
+}
 
 export async function LatestArticlesSection() {
-  const latestArticles = await getLatestArticles(6)
+  let latestArticles = []
+  
+  try {
+    latestArticles = await getLatestArticles(6)
+  } catch (error) {
+    console.error('Error fetching latest articles:', error)
+  }
   return (
     <section className="py-20 bg-[#dadbd5]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">

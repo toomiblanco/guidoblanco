@@ -12,18 +12,15 @@ interface Article {
   content: string
   cover_image_url: string | null
   published_at: string
-  categories: {
-    id: string
+  published_date?: string | null
+  interview_date?: string | null
+  category_name?: string | null
+  category_slug?: string | null
+  article_tags?: {
+    tag_id: string
     name: string
     slug: string
-  } | null
-  article_tags: {
-    tags: {
-      id: string
-      name: string
-      slug: string
-    }
-  }[]
+  }[] | null
 }
 
 interface SidebarArticle {
@@ -32,11 +29,7 @@ interface SidebarArticle {
   cover_image_url: string | null
   slug: string
   published_at: string
-  categories: {
-    id: string
-    name: string
-    slug: string
-  } | null
+  category_name?: string | null
 }
 
 interface ArticleContentProps {
@@ -53,19 +46,23 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
           <div className="max-w-4xl mx-auto mb-8">
             <header className="mb-8">
               <div className="flex items-center gap-4 mb-6">
-                {article.categories && (
+                {article.category_name && (
                   <Badge variant="secondary" className="bg-secondary text-secondary-foreground">
-                    {article.categories.name}
+                    {article.category_name}
                   </Badge>
                 )}
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
-                    {new Date(article.published_at).toLocaleDateString("es-ES", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {(() => {
+                      // Priorizar published_date si existe, sino usar published_at
+                      const dateToShow = article.published_date || article.published_at
+                      return new Date(dateToShow).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    })()}
                   </div>
                   <div className="flex items-center gap-1">
                     <User className="h-4 w-4" />
@@ -92,18 +89,46 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
           </div>
 
           {/* Layout con grid: contenido principal y sidebar */}
-          <div className="grid lg:grid-cols-4 gap-8">
+          <div className="grid lg:grid-cols-4 gap-8 max-w-full">
             {/* Contenido principal */}
-            <div className="col-span-full lg:col-span-3">
+            <div className="col-span-full lg:col-span-3 min-w-0 max-w-full overflow-hidden">
 
               {/* Content */}
               <div className="prose prose-lg max-w-none article-content">
                 <div 
-                  className="text-foreground leading-relaxed" 
+                  className="text-foreground leading-relaxed break-words overflow-wrap-break-word max-w-full" 
+                  style={{
+                    wordBreak: 'normal',
+                    overflowWrap: 'break-word',
+                    hyphens: 'none',
+                    WebkitHyphens: 'none',
+                    msHyphens: 'none'
+                  }}
                   dangerouslySetInnerHTML={{ __html: article.content }} 
                 />
                 
                 <style jsx>{`
+                  .article-content {
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                    word-break: normal;
+                    max-width: 100%;
+                    width: 100%;
+                    hyphens: none;
+                    -webkit-hyphens: none;
+                    -ms-hyphens: none;
+                  }
+                  
+                  .article-content :global(*) {
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                    word-break: normal;
+                    max-width: 100%;
+                    hyphens: none;
+                    -webkit-hyphens: none;
+                    -ms-hyphens: none;
+                  }
+                  
                   .article-content :global(h1) {
                     font-size: 2.25rem;
                     font-weight: 700;
@@ -136,6 +161,14 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
                     margin: 1rem 0;
                     line-height: 1.7;
                     font-size: 1.125rem;
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                    word-break: normal;
+                    max-width: 100%;
+                    white-space: pre-wrap;
+                    hyphens: none;
+                    -webkit-hyphens: none;
+                    -ms-hyphens: none;
                   }
                   
                   .article-content :global(blockquote) {
@@ -206,17 +239,40 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
                     padding: 0;
                     border-radius: 0;
                   }
+                  
+                  /* Estilos adicionales para controlar desbordamiento */
+                  .article-content :global(div),
+                  .article-content :global(span),
+                  .article-content :global(table),
+                  .article-content :global(td),
+                  .article-content :global(th) {
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                    word-break: normal;
+                    max-width: 100%;
+                    hyphens: none;
+                    -webkit-hyphens: none;
+                    -ms-hyphens: none;
+                  }
+                  
+                  /* Asegurar que las palabras completas pasen al siguiente renglón */
+                  .article-content :global(*) {
+                    hyphens: none;
+                    -webkit-hyphens: none;
+                    -ms-hyphens: none;
+                    word-break: normal;
+                  }
                 `}</style>
               </div>
 
               {/* Tags */}
-              {article.article_tags.length > 0 && (
+              {article.article_tags && article.article_tags.length > 0 && (
                 <footer className="mt-12 pt-8 border-t border-border">
                   <div className="flex flex-wrap gap-2">
                     <span className="text-sm font-medium text-muted-foreground mr-2">Etiquetas:</span>
                     {article.article_tags.map((articleTag) => (
-                      <Badge key={articleTag.tags.id} variant="outline" className="text-xs">
-                        {articleTag.tags.name}
+                      <Badge key={articleTag.tag_id} variant="outline" className="text-xs">
+                        {articleTag.name}
                       </Badge>
                     ))}
                   </div>

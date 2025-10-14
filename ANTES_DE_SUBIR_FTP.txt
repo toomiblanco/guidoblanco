@@ -1,0 +1,107 @@
+╔════════════════════════════════════════════════════════════════╗
+║           CHECKLIST ANTES DE SUBIR POR FTP                     ║
+╚════════════════════════════════════════════════════════════════╝
+
+📋 ARCHIVOS QUE DEBES TENER (Verificar que existen)
+═══════════════════════════════════════════════════════════════════
+
+✅ Carpetas principales:
+   [ ] app/
+   [ ] components/
+   [ ] database/
+       [ ] database/migrations/
+           [ ] 001_initial_schema.sql
+           [ ] 002_seed_data.sql
+           [ ] 003_create_admin_credentials.sql
+       [ ] database/setup-database-completo.sql
+   [ ] lib/
+       [ ] lib/auth/
+       [ ] lib/database/
+   [ ] public/
+   [ ] types/
+       [ ] types/next-auth.d.ts
+
+✅ Archivos de configuración:
+   [ ] package.json
+   [ ] package-lock.json
+   [ ] next.config.js
+   [ ] tsconfig.json
+   [ ] tailwind.config.ts
+   [ ] .env.production (CON puerto 3002)
+   [ ] ecosystem.config.js (CON puerto 3002 y ruta correcta)
+
+✅ Scripts y documentación:
+   [ ] check-vps.sh
+   [ ] test-connection.js
+   [ ] README_SUBIR_FTP.md
+   [ ] DEPLOYMENT_FTP.md
+   [ ] DEPLOYMENT_VPS_PASO_A_PASO.md
+
+═══════════════════════════════════════════════════════════════════
+
+❌ CARPETAS QUE DEBES ELIMINAR ANTES DE SUBIR
+═══════════════════════════════════════════════════════════════════
+
+IMPORTANTE: Estas carpetas ocupan mucho espacio y se regeneran:
+
+   [ ] node_modules/     ← ELIMINAR (Se instala con npm install)
+   [ ] .next/            ← ELIMINAR (Se crea con npm run build)
+   [ ] .git/             ← ELIMINAR (Opcional, no necesario)
+
+═══════════════════════════════════════════════════════════════════
+
+🔍 VERIFICAR CONTENIDO DE ARCHIVOS CLAVE
+═══════════════════════════════════════════════════════════════════
+
+📄 .env.production debe tener:
+   [ ] DB_HOST=localhost
+   [ ] DB_PORT=5432
+   [ ] DB_NAME=guidoblanco_db
+   [ ] DB_USER=guidoblanco_user
+   [ ] DB_PASSWORD=Tomi39917314!
+   [ ] NEXTAUTH_URL=http://162.240.174.46:3002  ← Puerto 3002!
+   [ ] NEXTAUTH_SECRET=xK8mP2vN9qR5sT8wE3zY6cA1bD4fG7hJ
+   [ ] NODE_ENV=production
+   [ ] NEXT_PUBLIC_SITE_URL=http://162.240.174.46:3002  ← Puerto 3002!
+
+📄 ecosystem.config.js debe tener:
+   [ ] name: 'guidoblanco'
+   [ ] PORT: 3002  ← Puerto 3002!
+   [ ] cwd: '/var/www/guidoblanco'  ← Ruta donde subirás
+
+═══════════════════════════════════════════════════════════════════
+
+📦 TAMAÑO APROXIMADO
+═══════════════════════════════════════════════════════════════════
+
+SIN node_modules/ y .next/:
+   Aproximadamente: 5-15 MB
+
+CON node_modules/ (NO recomendado):
+   Aproximadamente: 200-400 MB
+
+⚠️  Por eso es importante NO subir node_modules/
+
+═══════════════════════════════════════════════════════════════════
+
+✅ RESUMEN FINAL
+═══════════════════════════════════════════════════════════════════
+
+Verifica que:
+   [ ] Eliminé node_modules/
+   [ ] Eliminé .next/
+   [ ] .env.production tiene puerto 3002
+   [ ] ecosystem.config.js tiene puerto 3002
+   [ ] Tengo las 3 migraciones SQL en database/migrations/
+   [ ] Tengo setup-database-completo.sql
+
+═══════════════════════════════════════════════════════════════════
+
+🚀 SI TODO ESTÁ BIEN, PUEDES SUBIR POR FTP
+═══════════════════════════════════════════════════════════════════
+
+Siguiente paso:
+   → Abrir README_SUBIR_FTP.md
+   → Seguir las instrucciones paso a paso
+
+═══════════════════════════════════════════════════════════════════

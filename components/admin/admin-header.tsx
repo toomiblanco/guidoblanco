@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Menu, X, Home, FileText, FolderOpen, Tag, LogOut } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
+import { signOut, useSession } from "next-auth/react"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: Home },
@@ -19,10 +19,10 @@ export function AdminHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
+  const { data: session, status } = useSession()
 
   const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    await signOut({ redirect: false })
     router.push("/")
   }
 

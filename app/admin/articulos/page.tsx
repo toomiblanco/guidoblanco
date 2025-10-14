@@ -1,41 +1,28 @@
-import { createClient } from "@/lib/supabase/server"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { redirect } from "next/navigation"
 import { AdminHeader } from "@/components/admin/admin-header"
 import { ArticlesTable } from "@/components/admin/articles-table"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import Link from "next/link"
+import { getAllArticlesAdmin } from "@/lib/database/queries"
+
+export const dynamic = 'force-dynamic'
 
 export default async function AdminArticlesPage() {
-  const supabase = await createClient()
+  const session = await getServerSession(authOptions)
 
-  // Check if user is authenticated and is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
-  if (!profile?.is_admin) {
-    redirect("/")
+  let articles = []
+  try {
+    articles = await getAllArticlesAdmin()
+  } catch (error) {
+    console.error('Error fetching articles:', error)
   }
-
-  // Fetch articles
-  const { data: articles } = await supabase
-    .from("articles")
-    .select(
-      `
-      *,
-      categories (
-        name
-      )
-    `,
-    )
-    .order("created_at", { ascending: false })
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,7 +41,6 @@ export default async function AdminArticlesPage() {
               </Link>
             </Button>
           </div>
-
           <ArticlesTable articles={articles || []} />
         </div>
       </main>

@@ -53,13 +53,14 @@ export default function AboutPage() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <h1 className="text-5xl lg:text-6xl font-black text-[#1f201b] uppercase tracking-tight">SOBRE MÍ</h1>
-                <p className="text-xl text-[#6f706a] leading-relaxed">
-                  Con más de 15 años de experiencia en periodismo y comunicación, me especializo en análisis político,
-                  investigación periodística y comunicación estratégica.
+                <p className="text-lg text-[#6f706a] leading-relaxed">
+                  Soy Guido Blanco, periodista argentino formado en la Universidad Nacional de La Matanza (UNLaM). Desde Buenos Aires construyo mi camino en el periodismo cultural a través de entrevistas que buscan mucho más que preguntas y respuestas: diálogos que inspiran, emocionan y dejan huella.
                 </p>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  Mi pasión por la verdad y la transparencia me ha llevado a cubrir los eventos más importantes de la
-                  actualidad nacional e internacional, siempre con el compromiso de informar con rigor y objetividad.
+                <p className="text-lg text-[#6f706a] leading-relaxed">
+                  Tuve el privilegio de conversar con figuras icónicas del cine, la música y la televisión, artistas premiados con Óscars, Grammys, Emmys, Tonys y Globos de Oro, y reconocidos en el Paseo de la Fama de Hollywood. Mi estilo se caracteriza por la profundidad, la empatía y la curiosidad, cuidando cada etapa del proceso, desde la investigación y la realización hasta la edición y traducción.
+                </p>
+                <p className="text-lg text-[#6f706a] leading-relaxed">
+                  Me identifican el amor por lo clásico y la fascinación por la cultura pop, queer y camp, pero sobre todo me mueve la interés constante: la posibilidad de descubrir nuevas miradas y compartir historias que preservan la memoria cultural mientras generan un puente entre artistas, medios y audiencias.
                 </p>
               </div>
               <div className="relative">

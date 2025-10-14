@@ -1,30 +1,20 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
-import { AdminHeader } from "@/components/admin/admin-header"
-import { ArticleEditor } from "@/components/admin/article-editor"
+import { redirect } from 'next/navigation'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { AdminHeader } from '@/components/admin/admin-header'
+import { ArticleEditor } from '@/components/admin/article-editor'
+import { getAllCategories, getAllTags } from '@/lib/database/queries'
 
 export default async function NewArticlePage() {
-  const supabase = await createClient()
+  const session = await getServerSession(authOptions)
 
-  // Check if user is authenticated and is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
+  if (!session?.user || session.user.role !== 'admin') {
+    redirect('/auth/login')
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
-  if (!profile?.is_admin) {
-    redirect("/")
-  }
-
-  // Fetch categories and tags for the editor
-  const [{ data: categories }, { data: tags }] = await Promise.all([
-    supabase.from("categories").select("*").order("name"),
-    supabase.from("tags").select("*").order("name"),
+  const [categories, tags] = await Promise.all([
+    getAllCategories(),
+    getAllTags()
   ])
 
   return (

@@ -11,23 +11,20 @@ interface Article {
   cover_image_url: string | null
   slug: string
   published_at: string
-  categories: {
-    id: string
-    name: string
-    slug: string
-  } | null
+  category_name?: string | null
 }
 
 interface RelatedArticlesProps {
   articles: Article[]
+  title?: string
 }
 
-export function RelatedArticles({ articles }: RelatedArticlesProps) {
+export function RelatedArticles({ articles, title = "Artículos Relacionados" }: RelatedArticlesProps) {
   return (
     <section className="py-16 bg-card">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-card-foreground mb-8">Artículos Relacionados</h2>
+          <h2 className="text-2xl font-bold text-card-foreground mb-8">{title}</h2>
 
           <div className="grid md:grid-cols-3 gap-6">
             {articles.map((article) => (
@@ -39,10 +36,10 @@ export function RelatedArticles({ articles }: RelatedArticlesProps) {
                     fill
                     className="object-cover"
                   />
-                  {article.categories && (
+                  {article.category_name && (
                     <div className="absolute top-2 left-2">
                       <Badge variant="secondary" className="bg-secondary text-secondary-foreground text-xs">
-                        {article.categories.name}
+                        {article.category_name}
                       </Badge>
                     </div>
                   )}

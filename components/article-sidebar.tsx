@@ -12,11 +12,7 @@ interface SidebarArticle {
   cover_image_url: string | null
   slug: string
   published_at: string
-  categories: {
-    id: string
-    name: string
-    slug: string
-  } | null
+  category_name?: string | null
 }
 
 interface ArticleSidebarProps {
@@ -51,10 +47,10 @@ export function ArticleSidebar({ articles }: ArticleSidebarProps) {
                   fill
                   className="object-cover"
                 />
-                {article.categories && (
+                {article.category_name && (
                   <div className="absolute top-2 left-2">
                     <Badge variant="secondary" className="text-xs">
-                      {article.categories.name}
+                      {article.category_name}
                     </Badge>
                   </div>
                 )}

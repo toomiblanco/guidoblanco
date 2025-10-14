@@ -4,23 +4,23 @@ import { Newspaper, Users, Search, Megaphone } from "lucide-react"
 const services = [
   {
     icon: Newspaper,
-    title: "Periodismo Investigativo",
-    description: "Investigación profunda y análisis riguroso de temas de interés público con fuentes verificadas.",
+    title: "Entrevistas Culturales",
+    description: "Producción de entrevistas en profundidad con personalidades del cine, la música y la televisión, resaltando a figuras icónicas y multipremiadas que forman parte del patrimonio cultural internacional.",
   },
   {
     icon: Users,
-    title: "Comunicación Estratégica",
-    description: "Desarrollo de estrategias comunicacionales efectivas para organizaciones y figuras públicas.",
+    title: "Periodismo Internacional",
+    description: "Cobertura y generación de contenidos que trascienden fronteras, conectando audiencias de distintos países a través de referentes culturales con reconocimiento global.",
   },
   {
     icon: Search,
-    title: "Análisis Político",
-    description: "Cobertura especializada y análisis experto de la actualidad política nacional e internacional.",
+    title: "Producción Periodística Integral",
+    description: "Gestión completa del proceso de entrevistas —desde la preproducción y el contacto con invitados hasta la realización y edición final— con un estándar profesional en cada etapa.",
   },
   {
     icon: Megaphone,
-    title: "Consultoría Editorial",
-    description: "Asesoramiento editorial y desarrollo de contenidos para medios digitales y tradicionales.",
+    title: "Investigación y Contexto",
+    description: "Elaboración de entrevistas que combinan actualidad con perspectiva histórica, aportando rigor, análisis y profundidad en el retrato de trayectorias artísticas y culturales.",
   },
 ]
 

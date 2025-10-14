@@ -2,12 +2,16 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Mail, ArrowRight, Menu, X } from "lucide-react"
+import { Mail, ArrowRight, Menu, X, ArrowDown } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 
-export function HeroSection() {
+interface HeroSectionProps {
+  intervieweeNames?: string[]
+}
+
+export function HeroSection({ intervieweeNames = [] }: HeroSectionProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   return (
     <section className="relative min-h-screen bg-[#dadbd5]">
@@ -85,43 +89,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Stats positioned more to the left - clean text only in 2x2 grid */}
-      <div className="absolute top-72 right-32 z-30 hidden lg:block">
-        <div className="grid grid-cols-2 gap-6">
-          <div className="text-center">
-            <div className="text-5xl font-bold text-[#1f201b]">15+</div>
-            <div className="text-sm text-[#6f706a]">Años Experiencia</div>
-          </div>
-          
-          <div className="text-center">
-            <div className="text-5xl font-bold text-[#1f201b]">280+</div>
-            <div className="text-sm text-[#6f706a]">Proyectos Entregados</div>
-          </div>
-
-          <div className="text-center">
-            <div className="text-5xl font-bold text-[#1f201b]">+99%</div>
-            <div className="text-sm text-[#6f706a]">Satisfacción Cliente</div>
-          </div>
-
-          <div className="text-center">
-            <div className="text-5xl font-bold text-[#1f201b]">50</div>
-            <div className="text-sm text-[#6f706a]">Clientes worldwide</div>
-          </div>
-        </div>
-
-<div className="container mx-auto px-20 pt-22 pb-16 relative z-20">
-
-  <Button size="lg" className="group bg-[#1e1e1c] text-[#dadbd5] hover:bg-[#1f201b] rounded-full px-8" asChild>
-              <Link href="/contacto">
-                <Mail className="mr-2 h-4 w-4" />
-                CONTACTAME
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-</div>
-
-      </div>
-
       <div className="container mx-auto px-6 pt-32 pb-16 relative z-20">
         <div className="grid lg:grid-cols-3 gap-12 items-center min-h-[80vh]">
           {/* Left Content */}
@@ -138,67 +105,109 @@ export function HeroSection() {
               </h1>
               
               <p className="text-lg text-[#6f706a] leading-relaxed max-w-xl">
-                Transformando ideas en contenido impactante.<br />
-                Periodismo y comunicación estratégica<br />
-                que cautiva, conecta y genera<br />
-                resultados extraordinarios.
+                Periodismo con mirada propia: contenidos que informan, inspiran y dejan huella.
               </p>
             </div>
 
-          
+            {/* Scroll down button - dentro del contenido izquierdo */}
+            <div className="flex justify-start pt-8">
+              <button 
+                onClick={() => {
+                  const nextSection = document.querySelector('#artistas-entrevistados');
+                  if (nextSection) {
+                    nextSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="group flex flex-col items-center space-y-2 p-4 hover:bg-white/10 rounded-full transition-all duration-300"
+              >
+                <div className="text-xs text-[#6f706a] font-medium tracking-wide">EXPLORAR</div>
+                <div className="w-6 h-6 border-2 border-[#6f706a] rounded-full flex items-center justify-center group-hover:border-[#1f201b] transition-colors">
+                  <ArrowDown className="w-3 h-3 text-[#6f706a] group-hover:text-[#1f201b] transition-all transform group-hover:translate-y-0.5" />
+                </div>
+              </button>
+            </div>
 
           </div>
 
-          {/* Right Content - Space for stats (shown on desktop) */}
-          <div className="hidden lg:block">
-            {/* Stats are positioned absolutely */}
+          {/* Right Content - Professional highlights */}
+          <div className="hidden lg:block space-y-8">
+            {/* Professional highlights */}
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-8 space-y-6">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-[#1f201b] mb-4">Especialidades</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-[#1f201b] rounded-full"></div>
+                    <span className="text-sm text-[#6f706a]">Entrevistas Culturales</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-[#1f201b] rounded-full"></div>
+                    <span className="text-sm text-[#6f706a]">Periodismo Internacional</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-[#1f201b] rounded-full"></div>
+                    <span className="text-sm text-[#6f706a]">Producción Integral</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-[#1f201b] rounded-full"></div>
+                    <span className="text-sm text-[#6f706a]">Cultura Pop & Clásica</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Awards highlight */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#1f201b]">🏆</div>
+                <p className="text-sm text-[#6f706a] mt-2">
+                  Entrevistas con artistas premiados con Óscars, Grammys, Emmys y Globos de Oro
+                </p>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Mobile stats - clean text only */}
-        <div className="lg:hidden mt-12">
-          <div className="grid grid-cols-2 gap-8">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[#1f201b]">15+</div>
-              <div className="text-sm text-[#6f706a]">Años Experiencia</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[#1f201b]">280+</div>
-              <div className="text-sm text-[#6f706a]">Proyectos Entregados</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[#1f201b]">+99%</div>
-              <div className="text-sm text-[#6f706a]">Satisfacción Cliente</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[#1f201b]">50</div>
-              <div className="text-sm text-[#6f706a]">Clientes worldwide</div>
-            </div>
-          </div>
-        </div>
-
+      <div className="container mx-auto px-6">
         {/* Trusted By Section */}
-        <div className="pt-16">
+        <div id="artistas-entrevistados" className="pt-8">
           <div className="text-center mb-8">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-[#6f706a] mb-6">
-              TRUSTED BY
+              ARTISTAS ENTREVISTADOS
             </h3>
             <p className="text-sm text-[#6f706a] mb-8">
-              Join 1,000 companies already building their websites with brandable
+              Figuras icónicas del cine, la música y la televisión que han confiado en mi trabajo
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6 opacity-60">
-            {[
-              "Frame Blox", "Supa Blox", "Hype Blox", "Ultra Blox",
-              "Ship Blox", "Frame Blox", "Ultra Blox", "Ship Blox"
-            ].map((company, index) => (
-              <div key={index} className="text-center py-4">
-                <div className="text-sm font-medium text-[#6f706a]">
-                  {company}
+          {/* Scrolling artist names */}
+          <div className="relative overflow-hidden">
+            {intervieweeNames.length > 0 ? (
+              <div className="flex animate-scroll space-x-8">
+                {intervieweeNames.map((artist, index) => (
+                  <div key={index} className="flex-shrink-0 text-center py-4">
+                    <div className="text-sm font-medium text-[#6f706a] whitespace-nowrap">
+                      {artist.toUpperCase()}
+                    </div>
+                  </div>
+                ))}
+                {/* Duplicate for seamless scroll */}
+                {intervieweeNames.map((artist, index) => (
+                  <div key={`duplicate-${index}`} className="flex-shrink-0 text-center py-4">
+                    <div className="text-sm font-medium text-[#6f706a] whitespace-nowrap">
+                      {artist.toUpperCase()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-sm text-[#6f706a] opacity-60">
+                  Próximamente: nombres de artistas entrevistados
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

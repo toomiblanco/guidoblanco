@@ -16,7 +16,7 @@ interface Article {
     name: string
     slug: string
   } | null
-  article_tags: {
+  article_tags?: {
     tags: {
       id: string
       name: string
@@ -83,7 +83,7 @@ export function NewsGrid({ articles }: NewsGridProps) {
                 <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{article.summary}</p>
               )}
 
-              {article.article_tags.length > 0 && (
+              {article.article_tags && article.article_tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {article.article_tags.slice(0, 3).map((articleTag) => (
                     <Badge key={articleTag.tags.id} variant="outline" className="text-xs">

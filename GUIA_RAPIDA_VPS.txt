@@ -1,0 +1,153 @@
+╔════════════════════════════════════════════════════════════════╗
+║              GUÍA RÁPIDA DEPLOYMENT VPS - PUERTO 3002          ║
+╚════════════════════════════════════════════════════════════════╝
+
+📌 ARCHIVO PRINCIPAL: DEPLOYMENT_VPS_PASO_A_PASO.md
+
+═══════════════════════════════════════════════════════════════════
+
+🔑 CONFIGURACIÓN IMPORTANTE:
+   - Puerto: 3002 (los demás están ocupados)
+   - URL: http://162.240.174.46:3002
+   - Admin: admin@guidoblanco.com / admin123
+
+═══════════════════════════════════════════════════════════════════
+
+⚡ COMANDOS RÁPIDOS (Copiar y pegar en el VPS)
+═══════════════════════════════════════════════════════════════════
+
+1️⃣ SUBIR ARCHIVOS AL VPS (desde tu máquina local)
+
+   scp -r * usuario@162.240.174.46:/var/www/guidoblanco/
+
+2️⃣ CONECTAR AL VPS
+
+   ssh usuario@162.240.174.46
+   cd /var/www/guidoblanco
+
+3️⃣ VERIFICAR ENTORNO (ejecuta esto primero)
+
+   bash check-vps.sh
+
+4️⃣ CREAR/VERIFICAR BASE DE DATOS
+
+   sudo -u postgres psql
+
+   -- Dentro de psql:
+   CREATE USER guidoblanco_user WITH PASSWORD 'Tomi39917314!';
+   CREATE DATABASE guidoblanco_db OWNER guidoblanco_user;
+   GRANT ALL PRIVILEGES ON DATABASE guidoblanco_db TO guidoblanco_user;
+   \c guidoblanco_db
+   GRANT ALL ON SCHEMA public TO guidoblanco_user;
+   \q
+
+5️⃣ EJECUTAR MIGRACIONES
+
+   psql -h localhost -U guidoblanco_user -d guidoblanco_db -f database/migrations/001_initial_schema.sql
+   psql -h localhost -U guidoblanco_user -d guidoblanco_db -f database/migrations/002_seed_data.sql
+   psql -h localhost -U guidoblanco_user -d guidoblanco_db -f database/migrations/003_create_admin_credentials.sql
+
+6️⃣ CONFIGURAR VARIABLES DE ENTORNO
+
+   cp .env.production .env.local
+
+7️⃣ INSTALAR Y COMPILAR
+
+   npm install
+   npm run build
+
+8️⃣ INICIAR CON PM2
+
+   pm2 start ecosystem.config.js
+   pm2 save
+   pm2 startup
+
+9️⃣ VER LOGS
+
+   pm2 logs guidoblanco
+
+🔟 ABRIR EN NAVEGADOR
+
+   http://162.240.174.46:3002
+
+═══════════════════════════════════════════════════════════════════
+
+📁 ARCHIVOS IMPORTANTES QUE CREÉ:
+═══════════════════════════════════════════════════════════════════
+
+✅ DEPLOYMENT_VPS_PASO_A_PASO.md  ← LEE ESTE PRIMERO
+✅ ecosystem.config.js             ← Config de PM2 (puerto 3002)
+✅ check-vps.sh                    ← Script de verificación
+✅ .env.production                 ← Variables de entorno (puerto 3002)
+✅ test-connection.js              ← Test de conexión a PostgreSQL
+✅ RESUMEN_REFACTORIZACION.md      ← Documentación completa
+✅ INSTRUCCIONES_DATABASE.md       ← Guía de base de datos
+
+═══════════════════════════════════════════════════════════════════
+
+🆘 SI ALGO FALLA:
+═══════════════════════════════════════════════════════════════════
+
+❌ Error de conexión a BD:
+   sudo systemctl status postgresql
+   psql -h localhost -U guidoblanco_user -d guidoblanco_db
+
+❌ Login no funciona:
+   cat .env.local | grep NEXTAUTH_URL
+   # Debe ser: http://162.240.174.46:3002
+   pm2 restart guidoblanco
+
+❌ Puerto ocupado:
+   sudo lsof -i :3002
+   # Cambiar puerto en ecosystem.config.js
+
+❌ Ver logs:
+   pm2 logs guidoblanco --lines 100
+
+═══════════════════════════════════════════════════════════════════
+
+💡 COMANDOS ÚTILES PM2:
+═══════════════════════════════════════════════════════════════════
+
+pm2 status                 ← Ver estado
+pm2 logs guidoblanco       ← Ver logs en tiempo real
+pm2 restart guidoblanco    ← Reiniciar
+pm2 stop guidoblanco       ← Detener
+pm2 monit                  ← Monitor visual
+
+═══════════════════════════════════════════════════════════════════
+
+✅ VERIFICAR QUE TODO FUNCIONA:
+═══════════════════════════════════════════════════════════════════
+
+1. PostgreSQL corriendo: sudo systemctl status postgresql
+2. Tablas creadas: psql -h localhost -U guidoblanco_user -d guidoblanco_db -c "\dt"
+3. PM2 corriendo: pm2 status
+4. Puerto 3002 escuchando: sudo netstat -tlnp | grep 3002
+5. Abrir navegador: http://162.240.174.46:3002
+6. Login: admin@guidoblanco.com / admin123
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 RESUMEN DE 1 MINUTO:
+═══════════════════════════════════════════════════════════════════
+
+# Subir archivos al VPS
+scp -r * usuario@162.240.174.46:/var/www/guidoblanco/
+
+# Conectar y ejecutar
+ssh usuario@162.240.174.46
+cd /var/www/guidoblanco
+bash check-vps.sh
+cp .env.production .env.local
+npm install
+npm run build
+pm2 start ecosystem.config.js
+pm2 logs guidoblanco
+
+# Verificar
+http://162.240.174.46:3002
+
+═══════════════════════════════════════════════════════════════════
+
+¡LISTO! 🚀

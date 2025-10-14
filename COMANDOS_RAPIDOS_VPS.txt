@@ -1,0 +1,154 @@
+════════════════════════════════════════════════════════════════
+  COMANDOS RÁPIDOS PARA ARREGLAR EL LOGIN - COPIAR Y PEGAR
+════════════════════════════════════════════════════════════════
+
+📋 PASO 1: Conectar al VPS
+════════════════════════════════════════════════════════════════
+
+ssh usuario@162.240.174.46
+cd /var/www/guidoblanco
+
+
+📋 PASO 2: Ejecutar Script Simple
+════════════════════════════════════════════════════════════════
+
+bash arreglar-login.sh
+
+
+Si da error de formato, ejecutar primero:
+sed -i 's/\r$//' arreglar-login.sh
+bash arreglar-login.sh
+
+
+📋 PASO 3: OPCIÓN MANUAL (Si el script no funciona)
+════════════════════════════════════════════════════════════════
+
+# Copiar TODO este bloque y pegar en el terminal del VPS:
+
+cd /var/www/guidoblanco
+sudo systemctl start postgresql
+sudo -u postgres psql -f database/setup-database-completo.sql
+cp .env.production .env.local
+pm2 restart guidoblanco
+pm2 logs guidoblanco
+
+
+📋 PASO 4: OPCIÓN SUPER MANUAL (Crear usuario admin a mano)
+════════════════════════════════════════════════════════════════
+
+# Si lo anterior no funciona, crear el usuario admin manualmente:
+
+psql -h localhost -U guidoblanco_user -d guidoblanco_db
+
+# Dentro de psql, pegar esto (LÍNEA POR LÍNEA):
+
+DELETE FROM users WHERE email = 'admin@guidoblanco.com';
+
+INSERT INTO users (email, password_hash, full_name, is_admin, email_verified)
+VALUES ('admin@guidoblanco.com', '$2a$10$Kq8QTfh8/ZZr5M4uS3vKL.YW9sZpZg5XzGQf8cHSXFqKJ9t8r1z2W', 'Guido Blanco', true, true);
+
+SELECT email, is_admin FROM users WHERE email = 'admin@guidoblanco.com';
+
+\q
+
+# Luego reiniciar:
+pm2 restart guidoblanco
+
+
+📋 PASO 5: Verificar que funcionó
+════════════════════════════════════════════════════════════════
+
+# Ver logs:
+pm2 logs guidoblanco
+
+# Probar en navegador:
+http://162.240.174.46:3002/auth/login
+
+Email: admin@guidoblanco.com
+Password: admin123
+
+
+════════════════════════════════════════════════════════════════
+  TROUBLESHOOTING
+════════════════════════════════════════════════════════════════
+
+Error: "database does not exist"
+────────────────────────────────────────────────────────────────
+sudo -u postgres psql
+CREATE DATABASE guidoblanco_db OWNER guidoblanco_user;
+\q
+
+
+Error: "role guidoblanco_user does not exist"
+────────────────────────────────────────────────────────────────
+sudo -u postgres psql
+CREATE USER guidoblanco_user WITH PASSWORD 'Tomi39917314!';
+GRANT ALL PRIVILEGES ON DATABASE guidoblanco_db TO guidoblanco_user;
+\q
+
+
+Error: "relation users does not exist"
+────────────────────────────────────────────────────────────────
+psql -h localhost -U guidoblanco_user -d guidoblanco_db -f database/migrations/001_initial_schema.sql
+psql -h localhost -U guidoblanco_user -d guidoblanco_db -f database/migrations/002_seed_data.sql
+psql -h localhost -U guidoblanco_user -d guidoblanco_db -f database/migrations/003_create_admin_credentials.sql
+
+
+Ver estado de PostgreSQL
+────────────────────────────────────────────────────────────────
+sudo systemctl status postgresql
+
+
+Iniciar PostgreSQL
+────────────────────────────────────────────────────────────────
+sudo systemctl start postgresql
+
+
+Ver logs de PM2
+────────────────────────────────────────────────────────────────
+pm2 logs guidoblanco --lines 100
+
+
+Reiniciar todo
+────────────────────────────────────────────────────────────────
+sudo systemctl restart postgresql
+pm2 restart guidoblanco
+
+
+════════════════════════════════════════════════════════════════
+  VERIFICACIÓN COMPLETA
+════════════════════════════════════════════════════════════════
+
+# Verificar CADA paso:
+
+# 1. PostgreSQL corriendo
+sudo systemctl status postgresql | grep Active
+
+# 2. Base de datos existe
+sudo -u postgres psql -l | grep guidoblanco_db
+
+# 3. Usuario existe
+sudo -u postgres psql -c "\du" | grep guidoblanco_user
+
+# 4. Tablas creadas
+psql -h localhost -U guidoblanco_user -d guidoblanco_db -c "\dt"
+
+# 5. Usuario admin existe
+psql -h localhost -U guidoblanco_user -d guidoblanco_db -c "SELECT email, is_admin FROM users WHERE is_admin = true;"
+
+# 6. App corriendo
+pm2 status | grep guidoblanco
+
+# 7. Puerto escuchando
+sudo netstat -tlnp | grep 3002
+
+
+════════════════════════════════════════════════════════════════
+  HASH DE CONTRASEÑA
+════════════════════════════════════════════════════════════════
+
+Password: admin123
+Hash bcrypt: $2a$10$Kq8QTfh8/ZZr5M4uS3vKL.YW9sZpZg5XzGQf8cHSXFqKJ9t8r1z2W
+
+
+════════════════════════════════════════════════════════════════

@@ -11,6 +11,7 @@ import Link from "next/link"
 interface Article {
   id: string
   title: string
+  slug: string
   is_published: boolean
   is_featured: boolean
   created_at: string
@@ -26,8 +27,34 @@ interface ArticlesTableProps {
 
 export function ArticlesTable({ articles }: ArticlesTableProps) {
   const [searchTerm, setSearchTerm] = useState("")
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const filteredArticles = articles.filter((article) => article.title.toLowerCase().includes(searchTerm.toLowerCase()))
+
+  const handleDelete = async (articleId: string, title: string) => {
+    if (!confirm(`¿Estás seguro de que quieres eliminar el artículo "${title}"?`)) {
+      return
+    }
+
+    setDeletingId(articleId)
+    try {
+      const response = await fetch(`/api/admin/articles/${articleId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el artículo')
+      }
+
+      // Recargar la página para actualizar la lista
+      window.location.reload()
+    } catch (error) {
+      console.error('Error deleting article:', error)
+      alert('Error al eliminar el artículo')
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   return (
     <Card>
@@ -73,7 +100,7 @@ export function ArticlesTable({ articles }: ArticlesTableProps) {
                 <div className="flex items-center gap-1">
                   {article.is_published && (
                     <Button asChild variant="ghost" size="sm">
-                      <Link href={`/noticias/${article.id}`}>
+                      <Link href={`/noticias/${article.slug}`} target="_blank">
                         <Eye className="h-4 w-4" />
                       </Link>
                     </Button>
@@ -83,8 +110,13 @@ export function ArticlesTable({ articles }: ArticlesTableProps) {
                       <Edit className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button variant="ghost" size="sm">
-                    <Trash2 className="h-4 w-4 text-destructive" />
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => handleDelete(article.id, article.title)}
+                    disabled={deletingId === article.id}
+                  >
+                    <Trash2 className={`h-4 w-4 text-destructive ${deletingId === article.id ? 'animate-spin' : ''}`} />
                   </Button>
                 </div>
               </div>

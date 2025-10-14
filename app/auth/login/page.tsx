@@ -1,107 +1,92 @@
 "use client"
 
-import type React from "react"
-
-import { createClient } from "@/lib/supabase/client"
+import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const router = useRouter()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
-    setError(null)
+    setError("")
 
     try {
-      console.log("🔐 Login: Attempting login for:", email)
-      const { data, error } = await supabase.auth.signInWithPassword({
+      console.log("Intentando login con:", email)
+      
+      const result = await signIn("credentials", {
         email,
         password,
+        redirect: false,
       })
-      if (error) throw error
 
-      console.log("✅ Login: Successful login for user:", data.user?.email)
+      console.log("Resultado del signIn:", result)
 
-      // After successful login, always redirect to admin
-      // The middleware will handle permission checking
-      console.log("🔄 Login: Redirecting to /admin")
-      router.push("/admin")
-      
-    } catch (error: unknown) {
-      console.error("❌ Login error:", error)
-      setError(error instanceof Error ? error.message : "An error occurred")
+      if (result?.ok) {
+        console.log("Login exitoso, redirigiendo...")
+        window.location.href = "/admin"
+      } else {
+        console.log("Error en login:", result?.error)
+        setError(result?.error || "Credenciales incorrectas")
+      }
+    } catch (error) {
+      console.error("Error en login:", error)
+      setError("Error de conexión. Inténtalo de nuevo.")
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
-          <div className="text-center">
-            <Link href="/" className="text-2xl font-bold text-primary">
-              GUIDO BLANCO
-            </Link>
-            <p className="text-muted-foreground mt-2">Panel de Administración</p>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Iniciar Sesión</CardTitle>
-              <CardDescription>Ingresa tus credenciales para acceder al panel administrativo</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin}>
-                <div className="flex flex-col gap-6">
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="admin@guidoblanco.com"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="password">Contraseña</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                  {error && <p className="text-sm text-destructive">{error}</p>}
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
-                  </Button>
-                </div>
-                <div className="mt-4 text-center text-sm">
-                  <Link href="/" className="underline underline-offset-4">
-                    Volver al sitio principal
-                  </Link>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Iniciar Sesión</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <Alert className="mb-4" variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="password">Contraseña</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Iniciando..." : "Iniciar Sesión"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -1,7 +1,9 @@
-import { createClient } from "@/lib/supabase/server"
 import { NewsGrid } from "@/components/news-grid"
 import { NewsFilters } from "@/components/news-filters"
 import { Header } from "@/components/header"
+import { getAllArticles, getAllCategories, getAllTags } from "@/lib/database/queries"
+
+export const dynamic = 'force-dynamic'
 
 export default async function NoticiasPage({
   searchParams,
@@ -9,73 +11,62 @@ export default async function NoticiasPage({
   searchParams: Promise<{ categoria?: string; etiqueta?: string; buscar?: string }>
 }) {
   const params = await searchParams
-  const supabase = await createClient()
+  
+  let categories = []
+  let tags = []
+  let allArticles = []
+  
+  try {
+    [categories, tags, allArticles] = await Promise.all([
+      getAllCategories(),
+      getAllTags(),
+      getAllArticles()
+    ])
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  }
 
-  // Fetch categories for filters
-  const { data: categories } = await supabase.from("categories").select("*").order("name")
+  // Filter articles based on search parameters
+  let filteredArticles = allArticles
 
-  // Fetch tags for filters
-  const { data: tags } = await supabase.from("tags").select("*").order("name")
-
-  // Build query for articles
-  let query = supabase
-    .from("articles")
-    .select(`
-      *,
-      categories (
-        id,
-        name,
-        slug
-      ),
-      article_tags (
-        tags (
-          id,
-          name,
-          slug
-        )
-      )
-    `)
-    .eq("is_published", true)
-    .order("published_at", { ascending: false })
-
-  // Apply filters
   if (params.categoria) {
-    query = query.eq("categories.slug", params.categoria)
+    filteredArticles = filteredArticles.filter(article => 
+      article.category_name?.toLowerCase() === params.categoria?.toLowerCase()
+    )
   }
 
   if (params.buscar) {
-    query = query.or(`title.ilike.%${params.buscar}%,summary.ilike.%${params.buscar}%`)
+    const searchTerm = params.buscar.toLowerCase()
+    filteredArticles = filteredArticles.filter(article =>
+      article.title?.toLowerCase().includes(searchTerm) ||
+      article.summary?.toLowerCase().includes(searchTerm)
+    )
   }
 
-  const { data: articles } = await query
-
   return (
-    <div className="min-h-screen bg-[#dadbd5]">
+    <div className="min-h-screen bg-background">
       <Header />
-      <main className="py-12">
+      <main className="py-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-left">
-            <h1 className="text-5xl lg:text-6xl font-black text-[#1f201b] mb-4 uppercase tracking-tight">NOTICIAS Y ARTÍCULOS</h1>
-            <p className="text-lg text-[#6f706a] max-w-2xl">
-              Análisis, investigaciones y reportajes sobre los temas que marcan la actualidad
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-4">Noticias</h1>
+            <p className="text-muted-foreground">
+              Mantente al día con las últimas noticias y análisis
             </p>
           </div>
 
           <div className="grid lg:grid-cols-4 gap-8">
-            {/* Filters Sidebar */}
             <div className="lg:col-span-1">
-              <NewsFilters
-                categories={categories || []}
-                tags={tags || []}
+              <NewsFilters 
+                categories={categories || []} 
+                tags={tags || []} 
                 currentCategory={params.categoria}
                 currentTag={params.etiqueta}
                 currentSearch={params.buscar}
               />
             </div>
-
-            {/* Articles Grid */}
             <div className="lg:col-span-3">
-              <NewsGrid articles={articles || []} />
+              <NewsGrid articles={filteredArticles || []} />
             </div>
           </div>
         </div>

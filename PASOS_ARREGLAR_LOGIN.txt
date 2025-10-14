@@ -1,0 +1,176 @@
+════════════════════════════════════════════════════════════════
+  PASOS PARA ARREGLAR EL LOGIN - EJECUTAR UNO POR UNO
+════════════════════════════════════════════════════════════════
+
+📋 PASO 1: Conectar al VPS y entrar a la carpeta
+════════════════════════════════════════════════════════════════
+
+ssh usuario@162.240.174.46
+cd /var/www/guidoblanco
+
+
+📋 PASO 2: Convertir script a formato Unix (si da error de \r)
+════════════════════════════════════════════════════════════════
+
+sed -i 's/\r$//' fix-dependencies.sh
+
+
+📋 PASO 3: Ejecutar script automático
+════════════════════════════════════════════════════════════════
+
+bash fix-dependencies.sh
+
+
+SI EL SCRIPT FALLA, EJECUTAR MANUALMENTE:
+════════════════════════════════════════════════════════════════
+
+
+📋 PASO 4A: Instalar dependencias (MANUAL)
+════════════════════════════════════════════════════════════════
+
+npm install
+
+# Verificar que dotenv esté instalado:
+npm list dotenv
+
+
+📋 PASO 5A: Verificar y copiar .env.local (MANUAL)
+════════════════════════════════════════════════════════════════
+
+# Si no existe .env.local:
+cp .env.production .env.local
+
+# Editar .env.local:
+nano .env.local
+
+# CAMBIAR estas líneas:
+# DE:
+#   NEXTAUTH_URL=http://162.240.174.46:3002
+#   NEXT_PUBLIC_SITE_URL=http://162.240.174.46:3002
+#
+# A:
+#   NEXTAUTH_URL=http://162.240.174.46
+#   NEXT_PUBLIC_SITE_URL=http://162.240.174.46
+
+# Guardar: Ctrl+X → Y → Enter
+
+
+📋 PASO 6A: Reiniciar PM2 (MANUAL)
+════════════════════════════════════════════════════════════════
+
+pm2 restart guidoblanco
+pm2 logs guidoblanco --lines 30
+
+
+📋 PASO 7A: Probar conexión a base de datos (MANUAL)
+════════════════════════════════════════════════════════════════
+
+node test-connection.js
+
+
+📋 PASO 8: Probar login en navegador
+════════════════════════════════════════════════════════════════
+
+URL: http://162.240.174.46/auth/login
+
+Email: admin@guidoblanco.com
+Password: admin123
+
+
+════════════════════════════════════════════════════════════════
+  DIAGNÓSTICO SI SIGUE FALLANDO
+════════════════════════════════════════════════════════════════
+
+1. Ver logs de PM2 en TIEMPO REAL:
+   ────────────────────────────────────────────────────────────
+   pm2 logs guidoblanco
+
+   # Luego intenta hacer login y observa si aparecen logs
+
+
+2. Ver archivo .env.local actual:
+   ────────────────────────────────────────────────────────────
+   cat .env.local
+
+
+3. Ver estado de la app:
+   ────────────────────────────────────────────────────────────
+   pm2 status
+   pm2 describe guidoblanco
+
+
+4. Probar que Next.js esté escuchando:
+   ────────────────────────────────────────────────────────────
+   curl http://localhost:3002/auth/login
+
+
+5. Ver logs de Nginx:
+   ────────────────────────────────────────────────────────────
+   sudo tail -50 /var/log/nginx/error.log
+   sudo tail -50 /var/log/nginx/access.log
+
+
+6. Verificar que el hash de password es correcto:
+   ────────────────────────────────────────────────────────────
+   psql -h localhost -U guidoblanco_user -d guidoblanco_db -c "SELECT id, email, password_hash FROM users WHERE email = 'admin@guidoblanco.com';"
+
+   # El hash debe ser:
+   # $2a$10$Kq8QTfh8/ZZr5M4uS3vKL.YW9sZpZg5XzGQf8cHSXFqKJ9t8r1z2W
+
+
+════════════════════════════════════════════════════════════════
+  SOLUCIÓN NUCLEAR (si nada funciona)
+════════════════════════════════════════════════════════════════
+
+# 1. Detener app
+pm2 delete guidoblanco
+
+# 2. Limpiar todo
+rm -rf node_modules .next
+
+# 3. Reinstalar
+npm install
+
+# 4. Build
+npm run build
+
+# 5. Recrear .env.local desde cero
+cat > .env.local << 'EOF'
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=guidoblanco_db
+DB_USER=guidoblanco_user
+DB_PASSWORD=Tomi39917314!
+
+NEXTAUTH_URL=http://162.240.174.46
+NEXTAUTH_SECRET=tu-secret-muy-seguro-cambialo-en-produccion-2024
+
+NEXT_PUBLIC_SITE_URL=http://162.240.174.46
+NODE_ENV=production
+EOF
+
+# 6. Iniciar con PM2
+pm2 start ecosystem.config.js
+
+# 7. Ver logs
+pm2 logs guidoblanco
+
+
+════════════════════════════════════════════════════════════════
+  INFORMACIÓN IMPORTANTE
+════════════════════════════════════════════════════════════════
+
+⚠️  NEXTAUTH_URL debe ser SIN el puerto :3002 porque:
+   - Nginx está escuchando en puerto 80
+   - Nginx hace proxy a localhost:3002
+   - El navegador accede por puerto 80 (http://162.240.174.46)
+   - NextAuth valida que la URL coincida con la del navegador
+
+✅ Correcto:
+   NEXTAUTH_URL=http://162.240.174.46
+
+❌ Incorrecto:
+   NEXTAUTH_URL=http://162.240.174.46:3002
+
+
+════════════════════════════════════════════════════════════════
