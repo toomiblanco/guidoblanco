@@ -21,58 +21,64 @@ interface RelatedArticlesProps {
 }
 
 export function RelatedArticles({ articles, title = "Artículos Relacionados" }: RelatedArticlesProps) {
-  return (
-    <section className="py-16 bg-card">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-card-foreground mb-8">{title}</h2>
+  if (!articles || articles.length === 0) {
+    return (
+      <aside className="space-y-6">
+        <h3 className="text-lg font-semibold text-[#1f201b]">{title}</h3>
+        <div className="text-sm text-[#6f706a] bg-white/50 rounded-lg p-4">
+          No hay artículos relacionados en este momento.
+        </div>
+      </aside>
+    )
+  }
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {articles.map((article) => (
-              <Card key={article.id} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow">
-                <div className="relative h-32">
-                  <Image
-                    src={article.cover_image_url || "/placeholder.svg?height=128&width=300"}
-                    alt={article.title}
-                    fill
-                    className="object-cover"
-                  />
-                  {article.category_name && (
-                    <div className="absolute top-2 left-2">
-                      <Badge variant="secondary" className="bg-secondary text-secondary-foreground text-xs">
-                        {article.category_name}
-                      </Badge>
-                    </div>
+  return (
+    <aside className="space-y-6">
+      <h3 className="text-lg font-semibold text-[#1f201b]">{title}</h3>
+      <div className="space-y-4">
+        {articles.map((article) => (
+          <Card key={article.id} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
+            <Link href={`/noticias/${article.slug}`}>
+              <div className="relative h-32 w-full">
+                <Image
+                  src={article.cover_image_url || "/placeholder.svg?height=128&width=300"}
+                  alt={article.title}
+                  fill
+                  className="object-cover"
+                />
+                {article.category_name && (
+                  <div className="absolute top-2 left-2">
+                    <Badge variant="secondary" className="bg-[#1e1e1c] text-[#dadbd5] text-xs">
+                      {article.category_name}
+                    </Badge>
+                  </div>
+                )}
+              </div>
+
+              <CardContent className="p-4 bg-white">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1 text-xs text-[#6f706a]">
+                    <Calendar className="h-3 w-3" />
+                    {new Date(article.interview_date || article.published_at).toLocaleDateString("es-ES", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </div>
+
+                  <h4 className="text-sm font-semibold text-[#1f201b] leading-tight line-clamp-2">
+                    {article.title}
+                  </h4>
+
+                  {article.summary && (
+                    <p className="text-xs text-[#6f706a] leading-relaxed line-clamp-2">{article.summary}</p>
                   )}
                 </div>
-
-                <CardContent className="p-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(article.interview_date || article.published_at).toLocaleDateString("es-ES", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </div>
-
-                    <h3 className="text-sm font-semibold text-card-foreground leading-tight line-clamp-2">
-                      <Link href={`/noticias/${article.slug}`} className="hover:text-primary transition-colors">
-                        {article.title}
-                      </Link>
-                    </h3>
-
-                    {article.summary && (
-                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">{article.summary}</p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+              </CardContent>
+            </Link>
+          </Card>
+        ))}
       </div>
-    </section>
+    </aside>
   )
 }

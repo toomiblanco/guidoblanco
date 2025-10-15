@@ -45,7 +45,7 @@ export function NewsGrid({ articles }: NewsGridProps) {
       {articles.map((article) => (
         <Card
           key={article.id}
-          className="overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 p-0"
+          className="overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 p-0 bg-white"
         >
           <div className="relative h-48 w-full">
             <Image
@@ -54,18 +54,18 @@ export function NewsGrid({ articles }: NewsGridProps) {
               fill
               className="object-cover w-full h-full"
             />
-            {article.categories && (
+              {article.categories && (
               <div className="absolute top-3 left-3">
-                <Badge variant="secondary" className="bg-secondary text-secondary-foreground text-xs">
+                <Badge variant="secondary" className="bg-[#1e1e1c] text-[#dadbd5] text-xs">
                   {article.categories.name}
                 </Badge>
               </div>
             )}
           </div>
 
-          <CardContent className="p-6">
+          <CardContent className="p-6 bg-white">
             <div className="space-y-3">
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1 text-xs text-[#6f706a]">
                 <Calendar className="h-3 w-3" />
                 {new Date(article.interview_date || article.published_at).toLocaleDateString("es-ES", {
                   year: "numeric",
@@ -74,20 +74,20 @@ export function NewsGrid({ articles }: NewsGridProps) {
                 })}
               </div>
 
-              <h3 className="text-xl font-semibold text-foreground leading-tight">
-                <Link href={`/noticias/${article.slug}`} className="hover:text-primary transition-colors">
+              <h3 className="text-xl font-semibold text-[#1f201b] leading-tight">
+                <Link href={`/noticias/${article.slug}`} className="hover:text-[#6f706a] transition-colors">
                   {article.title}
                 </Link>
               </h3>
 
               {article.summary && (
-                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{article.summary}</p>
+                <p className="text-sm text-[#6f706a] leading-relaxed line-clamp-3">{article.summary}</p>
               )}
 
               {article.article_tags && article.article_tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {article.article_tags.slice(0, 3).map((articleTag) => (
-                    <Badge key={articleTag.tags.id} variant="outline" className="text-xs">
+                    <Badge key={articleTag.tags.id} variant="outline" className="text-xs border-[#6f706a] text-[#1f201b]">
                       {articleTag.tags.name}
                     </Badge>
                   ))}
@@ -96,7 +96,7 @@ export function NewsGrid({ articles }: NewsGridProps) {
 
               <Link
                 href={`/noticias/${article.slug}`}
-                className="inline-flex items-center text-primary hover:text-primary/80 text-sm font-medium transition-colors"
+                className="inline-flex items-center text-[#1e1e1c] hover:text-[#6f706a] text-sm font-medium transition-colors"
               >
                 Leer más →
               </Link>

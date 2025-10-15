@@ -3,7 +3,6 @@
 import { Badge } from "@/components/ui/badge"
 import { Calendar, User } from "lucide-react"
 import Image from "next/image"
-import { ArticleSidebar } from "@/components/article-sidebar"
 
 interface Article {
   id: string
@@ -23,21 +22,11 @@ interface Article {
   }[] | null
 }
 
-interface SidebarArticle {
-  id: string
-  title: string
-  cover_image_url: string | null
-  slug: string
-  published_at: string
-  category_name?: string | null
-}
-
 interface ArticleContentProps {
   article: Article
-  sidebarArticles?: SidebarArticle[]
 }
 
-export function ArticleContent({ article, sidebarArticles }: ArticleContentProps) {
+export function ArticleContent({ article }: ArticleContentProps) {
   return (
     <article className="py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,11 +36,11 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
             <header className="mb-8">
               <div className="flex items-center gap-4 mb-6">
                 {article.category_name && (
-                  <Badge variant="secondary" className="bg-secondary text-secondary-foreground">
+                  <Badge variant="secondary" className="bg-[#1e1e1c] text-[#dadbd5]">
                     {article.category_name}
                   </Badge>
                 )}
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-4 text-sm text-[#6f706a]">
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
                     {(() => {
@@ -71,9 +60,9 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
                 </div>
               </div>
 
-              <h1 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-6">{article.title}</h1>
+              <h1 className="text-4xl lg:text-5xl font-bold text-[#1f201b] leading-tight mb-6">{article.title}</h1>
 
-              {article.summary && <p className="text-xl text-muted-foreground leading-relaxed mb-8">{article.summary}</p>}
+              {article.summary && <p className="text-xl text-[#6f706a] leading-relaxed mb-8">{article.summary}</p>}
 
               {article.cover_image_url && (
                 <div className="relative h-64 lg:h-96 mb-8 rounded-lg overflow-hidden">
@@ -88,15 +77,15 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
             </header>
           </div>
 
-          {/* Layout con grid: contenido principal y sidebar */}
-          <div className="grid lg:grid-cols-4 gap-8 max-w-full">
+          {/* Layout con grid: contenido principal solamente */}
+          <div className="max-w-4xl mx-auto">
             {/* Contenido principal */}
-            <div className="col-span-full lg:col-span-3 min-w-0 max-w-full overflow-hidden">
+            <div className="min-w-0 max-w-full overflow-hidden">
 
               {/* Content */}
               <div className="prose prose-lg max-w-none article-content">
                 <div 
-                  className="text-foreground leading-relaxed break-words overflow-wrap-break-word max-w-full" 
+                  className="text-[#1f201b] leading-relaxed break-words overflow-wrap-break-word max-w-full" 
                   style={{
                     wordBreak: 'normal',
                     overflowWrap: 'break-word',
@@ -269,22 +258,15 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
               {article.article_tags && article.article_tags.length > 0 && (
                 <footer className="mt-12 pt-8 border-t border-border">
                   <div className="flex flex-wrap gap-2">
-                    <span className="text-sm font-medium text-muted-foreground mr-2">Etiquetas:</span>
+                    <span className="text-sm font-medium text-[#6f706a] mr-2">Etiquetas:</span>
                     {article.article_tags.map((articleTag) => (
-                      <Badge key={articleTag.tag_id} variant="outline" className="text-xs">
+                      <Badge key={articleTag.tag_id} variant="outline" className="text-xs border-[#6f706a] text-[#1f201b]">
                         {articleTag.name}
                       </Badge>
                     ))}
                   </div>
                 </footer>
               )}
-            </div>
-
-            {/* Sidebar con artículos relacionados - Solo visible en desktop */}
-            <div className="hidden lg:block lg:col-span-1">
-              <div className="lg:sticky lg:top-8">
-                <ArticleSidebar articles={sidebarArticles || []} />
-              </div>
             </div>
           </div>
         </div>
