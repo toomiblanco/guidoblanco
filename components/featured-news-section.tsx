@@ -91,7 +91,7 @@ export async function FeaturedNewsSection() {
               )}
               
               <Link
-                href={`/noticias/${featuredArticle.slug}`}
+                href={`/${featuredArticle.slug}`}
                 className="inline-flex items-center text-white font-medium hover:text-gray-200 transition-colors"
               >
                 Leer más →

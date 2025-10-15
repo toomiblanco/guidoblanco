@@ -100,7 +100,7 @@ export function ArticlesTable({ articles }: ArticlesTableProps) {
                 <div className="flex items-center gap-1">
                   {article.is_published && (
                     <Button asChild variant="ghost" size="sm">
-                      <Link href={`/noticias/${article.slug}`} target="_blank">
+                      <Link href={`/${article.slug}`} target="_blank">
                         <Eye className="h-4 w-4" />
                       </Link>
                     </Button>

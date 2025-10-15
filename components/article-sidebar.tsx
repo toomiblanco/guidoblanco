@@ -39,9 +39,9 @@ export function ArticleSidebar({ articles }: ArticleSidebarProps) {
       </h3>
       <div className="space-y-4">
         {articles.map((article) => (
-          <Card key={article.id} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
-            <Link href={`/noticias/${article.slug}`}>
-              <div className="relative h-32 w-full">
+          <Card key={article.id} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow bg-white p-0">
+            <Link href={`/${article.slug}`}>
+              <div className="relative h-24 w-full">
                 <Image
                   src={article.cover_image_url || "/placeholder.svg?height=128&width=200"}
                   alt={article.title}
@@ -56,8 +56,8 @@ export function ArticleSidebar({ articles }: ArticleSidebarProps) {
                   </div>
                 )}
               </div>
-              <CardContent className="p-4 bg-white">
-                <h4 className="text-sm font-medium text-[#1f201b] leading-tight line-clamp-2 mb-2">
+              <CardContent className="p-3 bg-white">
+                <h4 className="text-sm font-medium text-[#1f201b] leading-tight line-clamp-2 mb-1.5">
                   {article.title}
                 </h4>
                 <div className="flex items-center text-xs text-[#6f706a]">

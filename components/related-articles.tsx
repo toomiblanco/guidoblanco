@@ -37,9 +37,9 @@ export function RelatedArticles({ articles, title = "Artículos Relacionados" }:
       <h3 className="text-lg font-semibold text-[#1f201b]">{title}</h3>
       <div className="space-y-4">
         {articles.map((article) => (
-          <Card key={article.id} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
-            <Link href={`/noticias/${article.slug}`}>
-              <div className="relative h-32 w-full">
+          <Card key={article.id} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow bg-white p-0">
+            <Link href={`/${article.slug}`}>
+              <div className="relative h-24 w-full">
                 <Image
                   src={article.cover_image_url || "/placeholder.svg?height=128&width=300"}
                   alt={article.title}
@@ -55,8 +55,8 @@ export function RelatedArticles({ articles, title = "Artículos Relacionados" }:
                 )}
               </div>
 
-              <CardContent className="p-4 bg-white">
-                <div className="space-y-2">
+              <CardContent className="p-3 bg-white">
+                <div className="space-y-1.5">
                   <div className="flex items-center gap-1 text-xs text-[#6f706a]">
                     <Calendar className="h-3 w-3" />
                     {new Date(article.interview_date || article.published_at).toLocaleDateString("es-ES", {

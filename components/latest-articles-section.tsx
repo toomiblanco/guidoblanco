@@ -69,7 +69,7 @@ export async function LatestArticlesSection() {
                     )}
 
                     <Link
-                      href={`/noticias/${article.slug}`}
+                      href={`/${article.slug}`}
                       className="inline-flex items-center text-[#1e1e1c] hover:text-[#1f201b] text-sm font-medium transition-colors"
                     >
                       Leer más →

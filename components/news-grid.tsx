@@ -75,7 +75,7 @@ export function NewsGrid({ articles }: NewsGridProps) {
               </div>
 
               <h3 className="text-xl font-semibold text-[#1f201b] leading-tight">
-                <Link href={`/noticias/${article.slug}`} className="hover:text-[#6f706a] transition-colors">
+                <Link href={`/${article.slug}`} className="hover:text-[#6f706a] transition-colors">
                   {article.title}
                 </Link>
               </h3>
@@ -95,7 +95,7 @@ export function NewsGrid({ articles }: NewsGridProps) {
               )}
 
               <Link
-                href={`/noticias/${article.slug}`}
+                href={`/${article.slug}`}
                 className="inline-flex items-center text-[#1e1e1c] hover:text-[#6f706a] text-sm font-medium transition-colors"
               >
                 Leer más →
