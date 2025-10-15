@@ -1,6 +1,6 @@
 import { NewsGrid } from "@/components/news-grid"
 import { NewsFilters } from "@/components/news-filters"
-import { Header } from "@/components/header"
+import { Navigation } from "@/components/navigation"
 import { getAllArticles, getAllCategories, getAllTags } from "@/lib/database/queries"
 
 export const dynamic = 'force-dynamic'
@@ -44,33 +44,35 @@ export default async function NoticiasPage({
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="py-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-4">Noticias</h1>
-            <p className="text-muted-foreground">
-              Mantente al día con las últimas noticias y análisis
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#dadbd5]">
+      <div className="relative">
+        <Navigation />
+        <main className="py-8 pt-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-foreground mb-4">Noticias</h1>
+              <p className="text-muted-foreground">
+                Mantente al día con las últimas noticias y análisis
+              </p>
+            </div>
 
-          <div className="grid lg:grid-cols-4 gap-8">
-            <div className="lg:col-span-1">
-              <NewsFilters 
-                categories={categories || []} 
-                tags={tags || []} 
-                currentCategory={params.categoria}
-                currentTag={params.etiqueta}
-                currentSearch={params.buscar}
-              />
-            </div>
-            <div className="lg:col-span-3">
-              <NewsGrid articles={filteredArticles || []} />
+            <div className="grid lg:grid-cols-4 gap-8">
+              <div className="lg:col-span-1">
+                <NewsFilters 
+                  categories={categories || []} 
+                  tags={tags || []} 
+                  currentCategory={params.categoria}
+                  currentTag={params.etiqueta}
+                  currentSearch={params.buscar}
+                />
+              </div>
+              <div className="lg:col-span-3">
+                <NewsGrid articles={filteredArticles || []} />
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   )
 }

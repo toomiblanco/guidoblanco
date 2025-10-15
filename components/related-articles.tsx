@@ -11,6 +11,7 @@ interface Article {
   cover_image_url: string | null
   slug: string
   published_at: string
+  interview_date?: string
   category_name?: string | null
 }
 
@@ -49,7 +50,7 @@ export function RelatedArticles({ articles, title = "Artículos Relacionados" }:
                   <div className="space-y-2">
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Calendar className="h-3 w-3" />
-                      {new Date(article.published_at).toLocaleDateString("es-ES", {
+                      {new Date(article.interview_date || article.published_at).toLocaleDateString("es-ES", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",

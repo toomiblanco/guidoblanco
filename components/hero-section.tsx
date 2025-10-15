@@ -6,54 +6,17 @@ import { Mail, ArrowRight, Menu, X, ArrowDown } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import { Navigation } from "@/components/navigation"
 
 interface HeroSectionProps {
   intervieweeNames?: string[]
 }
 
 export function HeroSection({ intervieweeNames = [] }: HeroSectionProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   return (
     <section className="relative min-h-screen bg-[#dadbd5]">
       {/* Header integrated with page background */}
-      <div className="absolute top-0 left-0 right-0 z-[100]">
-        <div className="relative">
-          <div className="container mx-auto px-6 py-6 flex justify-between items-center">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-[#1f201b] rounded-full"></div>
-              <Link href="/" className="font-semibold text-sm tracking-wide text-[#1f201b] hover:text-[#6f706a] transition-colors">GUIDO BLANCO</Link>
-            </div>
-            <div className="relative">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="rounded-full bg-[#dadbd5]/80 backdrop-blur-sm border-[#6f706a] text-[#1f201b] hover:bg-[#1e1e1c] hover:text-[#dadbd5]"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <Menu className="h-4 w-4 mr-2" />
-                MENÚ
-              </Button>
-              
-              {/* Dropdown Menu positioned below button */}
-              {isMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-48 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-[#6f706a]/20 z-[9999] overflow-hidden">
-                  <div className="py-2">
-                    <Link href="/noticias" className="block px-4 py-2 text-[#1f201b] hover:bg-[#dadbd5]/50 transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>
-                      NOTICIAS
-                    </Link>
-                    <Link href="/sobre-mi" className="block px-4 py-2 text-[#1f201b] hover:bg-[#dadbd5]/50 transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>
-                      SOBRE MÍ
-                    </Link>
-                    <Link href="/contacto" className="block px-4 py-2 text-[#1f201b] hover:bg-[#dadbd5]/50 transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>
-                      CONTACTO
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      <Navigation />
 
       {/* SVG clipPath definition */}
       <svg width="0" height="0" aria-hidden style={{ position: 'absolute' }}>
@@ -105,7 +68,7 @@ export function HeroSection({ intervieweeNames = [] }: HeroSectionProps) {
               </h1>
               
               <p className="text-lg text-[#6f706a] leading-relaxed max-w-xl">
-                Periodismo con mirada propia: contenidos que informan, inspiran y dejan huella.
+                Cuento historias que invitan a mirar de cerca a los protagonistas de nuestro tiempo, entendiendo su recorrido no solo desde el éxito, sino desde la humanidad que los hace únicos.
               </p>
             </div>
 

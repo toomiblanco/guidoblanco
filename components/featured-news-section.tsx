@@ -74,7 +74,7 @@ export async function FeaturedNewsSection() {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 <span>
-                  {formatDate(featuredArticle.published_at || featuredArticle.created_at)}
+                  {formatDate(featuredArticle.interview_date || featuredArticle.published_at)}
                 </span>
               </div>
               <div className="flex items-center gap-2">

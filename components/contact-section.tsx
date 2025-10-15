@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { MessageCircle, Send } from "lucide-react"
+import { MessageCircle, Send, Weight } from "lucide-react"
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -50,7 +50,7 @@ Mensaje: ${formData.message}
   }
 
   return (
-    <section className="py-16 bg-muted/30">
+    <section id="contacto" className="py-16 bg-muted/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -125,6 +125,10 @@ Mensaje: ${formData.message}
               <div className="mt-4 text-center">
                 <p className="text-sm text-muted-foreground">
                   Al enviar el formulario se abrirá WhatsApp con tu mensaje listo para enviar
+                </p>
+
+                <p className="text-sm text-muted-foreground">
+                  o podés escribirme a mi correo personal <p style={{ fontWeight: 'bold' }}>guidomblanco@gmail.com</p>
                 </p>
               </div>
             </CardContent>

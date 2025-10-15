@@ -63,7 +63,7 @@ export async function getAllArticles() {
     FROM articles a
     LEFT JOIN categories c ON a.category_id = c.id
     WHERE a.is_published = true
-    ORDER BY a.published_at DESC, a.created_at DESC
+    ORDER BY COALESCE(a.interview_date, a.published_at, a.created_at) DESC
   `)
   return result.rows
 }
@@ -74,7 +74,7 @@ export async function getFeaturedArticle() {
     FROM articles a
     LEFT JOIN categories c ON a.category_id = c.id
     WHERE a.is_featured = true AND a.is_published = true
-    ORDER BY a.published_at DESC, a.created_at DESC
+    ORDER BY COALESCE(a.interview_date, a.published_at, a.created_at) DESC
     LIMIT 1
   `)
   return result.rows[0] || null
@@ -119,10 +119,10 @@ export async function getArticlesByCategory(
   if (excludeId) {
     queryText += ' AND a.id != $2'
     params.push(excludeId)
-    queryText += ` ORDER BY a.published_at DESC, a.created_at DESC LIMIT $3`
+    queryText += ` ORDER BY COALESCE(a.interview_date, a.published_at, a.created_at) DESC LIMIT $3`
     params.push(limit.toString())
   } else {
-    queryText += ` ORDER BY a.published_at DESC, a.created_at DESC LIMIT $2`
+    queryText += ` ORDER BY COALESCE(a.interview_date, a.published_at, a.created_at) DESC LIMIT $2`
     params.push(limit.toString())
   }
   
@@ -136,7 +136,7 @@ export async function getLatestArticles(limit: number = 6) {
     FROM articles a
     LEFT JOIN categories c ON a.category_id = c.id
     WHERE a.is_published = true AND a.is_featured = false
-    ORDER BY a.published_at DESC, a.created_at DESC
+    ORDER BY COALESCE(a.interview_date, a.published_at, a.created_at) DESC
     LIMIT $1
   `, [limit])
   return result.rows

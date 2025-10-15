@@ -59,7 +59,7 @@ export async function LatestArticlesSection() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-1 text-xs text-[#6f706a]">
                       <Calendar className="h-3 w-3" />
-                      {formatDateShort(article.published_at || article.created_at)}
+                      {formatDateShort(article.interview_date || article.published_at)}
                     </div>
 
                     <h3 className="text-lg font-semibold text-[#1f201b] leading-tight line-clamp-2">{article.title}</h3>

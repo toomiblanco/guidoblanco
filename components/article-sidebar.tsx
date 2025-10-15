@@ -12,6 +12,7 @@ interface SidebarArticle {
   cover_image_url: string | null
   slug: string
   published_at: string
+  interview_date?: string
   category_name?: string | null
 }
 
@@ -61,7 +62,7 @@ export function ArticleSidebar({ articles }: ArticleSidebarProps) {
                 </h4>
                 <div className="flex items-center text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3 mr-1" />
-                  {new Date(article.published_at).toLocaleDateString("es-ES", {
+                  {new Date(article.interview_date || article.published_at).toLocaleDateString("es-ES", {
                     day: "numeric",
                     month: "short",
                     year: "numeric",

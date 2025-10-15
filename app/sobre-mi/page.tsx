@@ -1,60 +1,60 @@
-import { Header } from "@/components/header"
+import { Navigation } from "@/components/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Award, BookOpen, Users, Globe } from "lucide-react"
+import { User, Globe, Briefcase, GraduationCap } from "lucide-react"
 import Image from "next/image"
 
 export default function AboutPage() {
   const achievements = [
     {
-      icon: Award,
-      title: "Premio Nacional de Periodismo",
-      year: "2023",
-      description: "Reconocimiento por excelencia en periodismo investigativo",
-    },
-    {
-      icon: BookOpen,
-      title: "Autor de 3 Libros",
-      year: "2020-2024",
-      description: "Publicaciones sobre comunicación y análisis político",
-    },
-    {
-      icon: Users,
-      title: "Conferencias Internacionales",
-      year: "2019-2024",
-      description: "Ponente en más de 50 eventos sobre periodismo",
+      icon: User,
+      title: "Perfil Profesional",
+      year: "",
+      description: "Persona proactiva, responsable y flexible ante los cambios, con gran disposición para el trabajo en equipo. Me caracterizan la creatividad, el liderazgo, la resolución de problemas y la orientación a resultados. Abierto al aprendizaje continuo en búsqueda de un crecimiento constante como profesional.",
     },
     {
       icon: Globe,
-      title: "Corresponsal Internacional",
-      year: "2018-2022",
-      description: "Cobertura de eventos políticos en Latinoamérica",
+      title: "Idiomas",
+      year: "",
+      description: "Español nativo, Inglés avanzado, Portugués básico",
+    },
+    {
+      icon: Briefcase,
+      title: "Habilidades",
+      year: "",
+      description: "Paquete de Microsoft Office • Gestión de redes sociales • Edición de video (Adobe Premiere Pro) • Edición de audio (Audacity) • Storytelling • Redacción periodística",
+    },
+    {
+      icon: GraduationCap,
+      title: "Cursos y Capacitaciones",
+      year: "",
+      description: "Curso de Periodismo sobre Cine — TEA (2022).\n\nCurso de Storytelling en el Marketing Digital — Santander Open Academy y The University of Chicago (2025)",
     },
   ]
 
   const skills = [
     "Periodismo Investigativo",
-    "Análisis Político",
     "Comunicación Estratégica",
-    "Redacción Editorial",
     "Entrevistas",
     "Fact-checking",
-    "Multimedia",
-    "Redes Sociales",
+    "Medios y cultura",
+    "Storytelling",
+    "Redacción periodística",
   ]
 
   return (
     <div className="min-h-screen bg-[#dadbd5]">
-      <Header />
-      <main className="py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative">
+        <Navigation />
+        <main className="py-12 pt-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}
           <section className="mb-16">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <h1 className="text-5xl lg:text-6xl font-black text-[#1f201b] uppercase tracking-tight">SOBRE MÍ</h1>
                 <p className="text-lg text-[#6f706a] leading-relaxed">
-                  Soy Guido Blanco, periodista argentino formado en la Universidad Nacional de La Matanza (UNLaM). Desde Buenos Aires construyo mi camino en el periodismo cultural a través de entrevistas que buscan mucho más que preguntas y respuestas: diálogos que inspiran, emocionan y dejan huella.
+                  Soy Guido Blanco, Técnico Universitario en Periodismo por la Universidad Nacional de La Matanza (UNLaM). Desde Buenos Aires construyo mi camino en el periodismo cultural a través de entrevistas que buscan mucho más que preguntas y respuestas: diálogos que inspiran, emocionan y dejan huella.
                 </p>
                 <p className="text-lg text-[#6f706a] leading-relaxed">
                   Tuve el privilegio de conversar con figuras icónicas del cine, la música y la televisión, artistas premiados con Óscars, Grammys, Emmys, Tonys y Globos de Oro, y reconocidos en el Paseo de la Fama de Hollywood. Mi estilo se caracteriza por la profundidad, la empatía y la curiosidad, cuidando cada etapa del proceso, desde la investigación y la realización hasta la edición y traducción.
@@ -81,12 +81,12 @@ export default function AboutPage() {
 
           {/* Achievements */}
           <section className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">Logros y Reconocimientos</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">Perfil y Competencias</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {achievements.map((achievement, index) => {
                 const Icon = achievement.icon
                 return (
-                  <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                  <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -95,9 +95,11 @@ export default function AboutPage() {
                         <div className="space-y-2">
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold text-foreground">{achievement.title}</h3>
-                            <Badge variant="secondary" className="text-xs">
-                              {achievement.year}
-                            </Badge>
+                            {achievement.year && (
+                              <Badge variant="secondary" className="text-xs">
+                                {achievement.year}
+                              </Badge>
+                            )}
                           </div>
                           <p className="text-sm text-muted-foreground">{achievement.description}</p>
                         </div>
@@ -123,7 +125,7 @@ export default function AboutPage() {
 
           {/* Contact CTA */}
           <section className="text-center">
-            <Card className="max-w-2xl mx-auto border-0 shadow-sm bg-card">
+            <Card className="max-w-2xl mx-auto border-0 shadow-sm bg-white">
               <CardContent className="p-8">
                 <h2 className="text-2xl font-bold text-card-foreground mb-4">¿Interesado en colaborar?</h2>
                 <p className="text-muted-foreground mb-6">
@@ -131,14 +133,9 @@ export default function AboutPage() {
                   editoriales.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
+               
                   <a
-                    href="mailto:contacto@guidoblanco.com"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors"
-                  >
-                    Contactar por Email
-                  </a>
-                  <a
-                    href="https://linkedin.com/in/guidoblanco"
+                    href="https://www.linkedin.com/in/guido-blanco-044799249/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center px-6 py-3 border border-border rounded-md font-medium hover:bg-muted transition-colors"
@@ -151,6 +148,7 @@ export default function AboutPage() {
           </section>
         </div>
       </main>
+      </div>
     </div>
   )
 }

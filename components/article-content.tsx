@@ -55,8 +55,8 @@ export function ArticleContent({ article, sidebarArticles }: ArticleContentProps
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
                     {(() => {
-                      // Priorizar published_date si existe, sino usar published_at
-                      const dateToShow = article.published_date || article.published_at
+                      // Priorizar interview_date si existe, sino usar published_at
+                      const dateToShow = article.interview_date || article.published_at
                       return new Date(dateToShow).toLocaleDateString("es-ES", {
                         year: "numeric",
                         month: "long",
